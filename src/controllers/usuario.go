@@ -11,6 +11,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi"
 )
 
 // CriarUsuario cria um novo usuário
@@ -101,6 +104,32 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func BuscarLogado(w http.ResponseWriter, r *http.Request) {
 	// Extraindo id logado do contexto da requisição
 	idLogado := r.Context().Value(config.IdKey).(int)
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarLogado(idLogado, db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
+
+// BuscarLogado busca dados de um usuário logado
+func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id logado do contexto da requisição
+	parametro := chi.URLParam(r, "id")
+	idLogado, erro := strconv.Atoi(parametro)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
 	// Abrindo conexão com banco de dados
 	db, erro := database.ConectarDB()
 	if erro != nil {
