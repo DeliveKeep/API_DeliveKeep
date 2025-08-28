@@ -18,9 +18,9 @@ func UsuariosRouter() chi.Router {
 	r.Group(func(r chi.Router) {
 		r.Use(middlewares.Autenticar)
 
-		r.Get("/me", controllers.BuscarLogado)
-
 		r.Get("/", controllers.BuscarUsuarios)
+
+		r.Get("/me", controllers.BuscarLogado)
 
 		r.Get("/{id}", controllers.BuscarUsuario)
 

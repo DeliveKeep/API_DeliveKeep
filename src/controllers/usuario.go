@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"API/src/auth"
+	"API/src/config"
 	"API/src/database"
 	"API/src/models"
 	"API/src/repositories"
@@ -94,4 +95,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	resposta := models.RespostaLogin{Id: IdESenha.Id, Token: token}
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusOK, resposta)
+}
+
+// BuscarLogado busca dados de um usuário logado
+func BuscarLogado(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarLogado(idLogado, db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }

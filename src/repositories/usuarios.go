@@ -27,3 +27,16 @@ func BuscarIdESenhaPorEmail(email string, db *sql.DB) (models.Usuario, error) {
 	}
 	return usuario, nil
 }
+
+// BuscarLogado busca dados exceto a senha de um usuário pela id
+func BuscarLogado(id int, db *sql.DB) (models.Usuario, error) {
+	sqlStatement := `SELECT id, nome, cpf, endereco, telefone, email FROM usuarios WHERE id=$1`
+	var usuario models.Usuario
+	if erro := db.QueryRow(sqlStatement, id).Scan(&usuario.Id, &usuario.Nome, &usuario.Cpf, &usuario.Endereco, &usuario.Telefone, &usuario.Email); erro != nil {
+		if erro == sql.ErrNoRows {
+			return models.Usuario{}, errors.New("Id nao encontrado")
+		}
+		return models.Usuario{}, erro
+	}
+	return usuario, nil
+}
