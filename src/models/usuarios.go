@@ -54,3 +54,8 @@ func (u *Usuario) ValidarLogin() error {
 	}
 	return nil
 }
+
+type RespostaLogin struct {
+	Id    int    `json:"id"`
+	Token string `json:"token"`
+}

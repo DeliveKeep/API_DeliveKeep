@@ -18,7 +18,7 @@ var (
 
 type contextKey string
 
-const MatriculaKey contextKey = "matricula"
+const IdKey contextKey = "id"
 
 // Carregar inicializa as variaveis de ambiente
 func Carregar() {

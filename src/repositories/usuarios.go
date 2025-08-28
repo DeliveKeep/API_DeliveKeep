@@ -3,6 +3,7 @@ package repositories
 import (
 	"API/src/models"
 	"database/sql"
+	"errors"
 )
 
 // CriarUsuario insere um novo usuario no banco de dados
@@ -12,4 +13,17 @@ func CriarUsuario(usuario *models.Usuario, db *sql.DB) error {
 		return erro
 	}
 	return nil
+}
+
+// BuscarIdSenhaPorEmail usa um email para buscar Id e senha de um usuário
+func BuscarIdESenhaPorEmail(email string, db *sql.DB) (models.Usuario, error) {
+	sqlStatement := `SELECT id, senha FROM usuarios WHERE email=$1`
+	var usuario models.Usuario
+	if erro := db.QueryRow(sqlStatement, email).Scan(&usuario.Id, &usuario.Senha); erro != nil {
+		if erro == sql.ErrNoRows {
+			return models.Usuario{}, errors.New("usuario com esse email nao encontrado")
+		}
+		return models.Usuario{}, erro
+	}
+	return usuario, nil
 }
