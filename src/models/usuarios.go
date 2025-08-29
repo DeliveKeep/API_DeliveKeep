@@ -47,6 +47,15 @@ func (u *Usuario) ValidarEmail() error {
 	return nil
 }
 
+// ValidarNome valida tamanho do nome
+func (u *Usuario) ValidarNome() error {
+	u.Nome = strings.TrimSpace(u.Nome)
+	if len(u.Nome) < 2 {
+		return errors.New("Nome deve ter pelo menos 2 caractéres")
+	}
+	return nil
+}
+
 // ValidarLogin verifica se dados de login estão presentes
 func (u *Usuario) ValidarLogin() error {
 	if u.Email == "" || u.Senha == "" {
