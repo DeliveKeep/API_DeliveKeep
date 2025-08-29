@@ -1,0 +1,11 @@
+type: object
+properties:
+  senha_atual:
+    type: string
+    format: password
+  senha_nova:
+    type: string
+    format: password
+required:
+  - senha_atual
+  - senha_nova

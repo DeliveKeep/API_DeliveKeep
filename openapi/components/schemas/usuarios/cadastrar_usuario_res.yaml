@@ -1,0 +1,18 @@
+type: object
+properties:
+  id:
+    type: integer
+  nome:
+    type: string
+  endereco:
+    type: string
+  cpf:
+    type: string
+  telefone:
+    type: string
+  email:
+    type: string
+    format: email
+  senha:
+    type: string
+    format: password

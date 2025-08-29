@@ -1,0 +1,11 @@
+type: object
+properties:
+  usuario:
+    type: string
+    example: Fulano123
+  senha:
+    type: string
+    format: password
+required:
+  - email
+  - senha
