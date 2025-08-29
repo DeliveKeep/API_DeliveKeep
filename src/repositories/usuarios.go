@@ -130,3 +130,21 @@ func AtualizarNome(dados models.Usuario, db *sql.DB) error {
 	}
 	return nil
 }
+
+// AtualizarEndereco atualiza endereco na tabela usuários
+func AtualizarEndereco(dados models.Usuario, db *sql.DB) error {
+	sqlStatement := `UPDATE usuarios SET endereco=$1 WHERE id=$2`
+	result, erro := db.Exec(sqlStatement, dados.Endereco, dados.Id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
