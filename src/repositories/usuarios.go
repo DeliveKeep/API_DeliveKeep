@@ -81,3 +81,34 @@ func DeletarUsuario(id int, db *sql.DB) error {
 	}
 	return nil
 }
+
+// BuscarSenhaPorId usa id para buscar senha de um usuário
+func BuscarSenhaPorId(id int, db *sql.DB) (string, error) {
+	sqlStatement := `SELECT senha FROM usuarios WHERE id=$1`
+	var senhaSalva string
+	if erro := db.QueryRow(sqlStatement, id).Scan(&senhaSalva); erro != nil {
+		if erro == sql.ErrNoRows {
+			return "", errors.New("usuario com esse id nao encontrado")
+		}
+		return "", erro
+	}
+	return senhaSalva, nil
+}
+
+// AtualizarSenha atualiza senha na tabela usuários
+func AtualizarSenha(senha string, id int, db *sql.DB) error {
+	sqlStatement := `UPDATE usuarios SET senha=$1 WHERE id=$2`
+	result, erro := db.Exec(sqlStatement, senha, id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
