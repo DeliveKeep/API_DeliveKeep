@@ -40,3 +40,27 @@ func BuscarLogado(id int, db *sql.DB) (models.Usuario, error) {
 	}
 	return usuario, nil
 }
+
+// BuscarLogado busca dados exceto a senha de um usuário pela id
+func BuscarUsuarios(db *sql.DB) ([]models.Usuario, error) {
+	sqlStatement := `SELECT id, nome, cpf, endereco, telefone, email FROM usuarios`
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		return []models.Usuario{}, err
+	}
+	defer rows.Close()
+	var usuarios []models.Usuario
+	// Itera sobre as linhas retornadas
+	for rows.Next() {
+		var usuario models.Usuario
+		if err := rows.Scan(&usuario.Id, &usuario.Nome, &usuario.Cpf, &usuario.Endereco, &usuario.Telefone, &usuario.Email); err != nil {
+			return []models.Usuario{}, err
+		}
+		usuarios = append(usuarios, usuario)
+	}
+	// Verifica se ocorreu algum erro durante a iteração
+	if err = rows.Err(); err != nil {
+		return []models.Usuario{}, err
+	}
+	return usuarios, nil
+}

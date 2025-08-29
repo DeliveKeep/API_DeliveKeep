@@ -146,3 +146,22 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
+
+// BuscarLogado busca dados de um usuário logado
+func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarUsuarios(db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
