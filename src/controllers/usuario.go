@@ -165,3 +165,23 @@ func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
+
+// DeletarUsuario deleta o usuario logado
+func DeletarUsuario(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id do logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para bucar dados no banco de dados
+	if erro = repositories.DeletarUsuario(idLogado, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}

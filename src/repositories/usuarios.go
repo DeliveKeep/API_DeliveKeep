@@ -64,3 +64,20 @@ func BuscarUsuarios(db *sql.DB) ([]models.Usuario, error) {
 	}
 	return usuarios, nil
 }
+
+// DeletarUsuario deleta um usuario
+func DeletarUsuario(id int, db *sql.DB) error {
+	sqlStatement := `DELETE FROM usuarios WHERE id=$1`
+	result, erro := db.Exec(sqlStatement, id)
+	if erro != nil {
+		return erro
+	}
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario logado nao existe")
+	}
+	return nil
+}
