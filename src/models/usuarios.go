@@ -16,6 +16,7 @@ type Usuario struct {
 	Email    string `json:"email,omitempty"`
 	Senha    string `json:"senha,omitempty"`
 	Endereco string `json:"endereco,omitempty"`
+	NotificacoesAtivas bool   `json:"notificacoes_ativas,omitempty"`
 }
 
 // Validar valida formato e tamanho dos dados, remove espaços em branco e criptografa a senha

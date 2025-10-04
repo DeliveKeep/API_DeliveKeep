@@ -25,7 +25,7 @@ func Carregar() {
 	var erro error
 
 	// ao usar docker não precisa usar godotenv
-	if erro = godotenv.Load("../.env"); erro != nil {
+	if erro = godotenv.Load(".env"); erro != nil {
 		log.Fatal(erro)
 	}
 
