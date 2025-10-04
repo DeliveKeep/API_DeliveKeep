@@ -383,3 +383,40 @@ func AtualizarEmail(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// AtualizarConfigNotificacoes ativa ou desativa as notificações para o usuário logado
+func AtualizarConfigNotificacoes(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+
+	// Lendo corpo da requisição para pegar o novo valor
+	var usuario models.Usuario
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+
+	if erro = json.Unmarshal(corpoReq, &usuario); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	// Chamando repositories para atualizar dados no banco de dados
+	if erro = repositories.AtualizarConfigNotificacoes(idLogado, usuario.NotificacoesAtivas, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}

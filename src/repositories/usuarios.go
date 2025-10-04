@@ -15,6 +15,21 @@ func CriarUsuario(usuario *models.Usuario, db *sql.DB) error {
 	return nil
 }
 
+// AtualizarConfigNotificacoes atualiza o status de notificação do usuário no banco
+func AtualizarConfigNotificacoes(usuarioID int, notificacoesAtivas bool, db *sql.DB) error {
+	statement, erro := db.Prepare("update usuarios set notificacoes_ativas = $1 where id = $2")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(notificacoesAtivas, usuarioID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
+
 // BuscarIdSenhaPorEmail usa um email para buscar Id e senha de um usuário
 func BuscarIdESenhaPorEmail(email string, db *sql.DB) (models.Usuario, error) {
 	sqlStatement := `SELECT id, senha FROM usuarios WHERE email=$1`
