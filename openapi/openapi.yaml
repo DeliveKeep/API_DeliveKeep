@@ -1,0 +1,538 @@
+openapi: 3.0.3
+info:
+  title: Delive Keep API
+  version: 1.0.0
+  description: REST API built with Go.
+servers:
+  - url: http://localhost:5000
+    description: Servidor local de desenvolvimento
+paths:
+  /usuarios/login:
+    post:
+      summary: Login
+      description: Verifica dados e retorna ou não token e id do logado
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/login/login_req_body.yaml'
+      responses:
+        '200':
+          description: Login efetuado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/login/login_res.yaml' 
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário com esse email não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha incorreta
+  /usuarios:
+    post:
+      summary: Cadastrar usuário
+      description: Cadastra um novo usuário e retorna seus dados
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/usuarios/cadastrar_usuario_req_body.yaml'
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/usuarios/cadastrar_usuario_res.yaml'
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: algum campo no formato inválido ou com poucos caracteres
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+    get:
+      summary: Listar usuários
+      description: Lista todos usuários cadastrados
+      tags:
+        - Usuários
+      responses:
+        '200':
+          description: Usuários listados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/usuarios/nao_sensiveis.yaml'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /usuarios/me:
+    get:
+      summary: Buscar usuário logado
+      description: Busca dados exceto a senha do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      responses:
+        '200':
+          description: Dados do usuário buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/usuarios/nao_sensiveis.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+    delete:
+      summary: Deletar usuário logado
+      description: Deleta dados do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      responses:
+        '204':
+          description: usário deletado (sem conteúdo)
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /usuarios/{id}:
+    get:
+      summary: Buscar usuário por id
+      description: Busca dados exceto a senha de um usuário por id
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_usuario.yaml'
+      tags:
+        - Usuários
+      responses:
+        '200':
+          description: Dados do usuário buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/usuarios/nao_sensiveis.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /usuarios/nome:
+    patch:
+      summary: Atualizar nome do usuário
+      description: Atualiza nome do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+              required:
+                - nome
+      responses:
+        '204':
+          description: nome atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: nome com menos de 2 caracteres
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/endereco:
+    patch:
+      summary: Atualizar endereco do usuário
+      description: Atualiza endereco do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endereco:
+                  type: string
+              required:
+                - endereco
+      responses:
+        '204':
+          description: endereco atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/telefone:
+    patch:
+      summary: Atualizar telefone do usuário
+      description: Atualiza telefone do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                telefone:
+                  type: string
+              required:
+                - telefone
+      responses:
+        '204':
+          description: telefone atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/email:
+    patch:
+      summary: Atualizar email do usuário
+      description: Atualiza email do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '204':
+          description: email atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: email inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/senha:
+    patch:
+      summary: Atualizar senha
+      description: Atualiza a senha do usuário logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Usuários
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/usuarios/atualizar_senha_req_body.yaml'
+      responses:
+        '204':
+          description: Senha atualizada com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha deve ter pelo menos 2 caracteres
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha atual incorreta
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados

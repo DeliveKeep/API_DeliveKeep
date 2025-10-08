@@ -1,0 +1,7 @@
+Redoc: Para gerar o html é necessário ter o node instalado e rodar o seguinte comando no mesmo diretório do openapi.yaml
+npx @redocly/cli build-docs openapi.yaml -o api_doc.html --title "Delive Keep API Doc"
+
+Unificar arquivos .yaml: Para gerar o unificado.yaml é necessário ter o node instalado e rodar o seguinte comando no mesmo diretório do openapi.yaml
+npx swagger-cli bundle openapi.yaml -o unificado.yaml -t yaml
+
+OBS: swagger e postman aceitam apenas o documento yaml unificado

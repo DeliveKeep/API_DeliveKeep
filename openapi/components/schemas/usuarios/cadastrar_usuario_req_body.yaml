@@ -1,0 +1,23 @@
+type: object
+properties:
+  nome:
+    type: string
+  endereco:
+    type: string
+  cpf:
+    type: string
+  telefone:
+    type: string
+  email:
+    type: string
+    format: email
+  senha:
+    type: string
+    format: password
+required:
+  - endereco
+  - nome
+  - senha
+  - cpf
+  - telefone
+  - email
