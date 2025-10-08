@@ -15,9 +15,7 @@ func PedidosRouter() chi.Router {
 
 	r.Post("/", controllers.CriarPedido)
 
-	//r.Get("/", controllers.BuscarPedidos)
-
-	//r.Get("/{id}", controllers.BuscarPedido)
+	r.Get("/{id}", controllers.BuscarPedido)
 
 	return r
 }
