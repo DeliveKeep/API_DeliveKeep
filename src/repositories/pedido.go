@@ -3,6 +3,7 @@ package repositories
 import (
 	"API/src/models"
 	"database/sql"
+	"errors"
 )
 
 // CriarUsuario insere um novo pedido no banco de dados
@@ -12,4 +13,17 @@ func CriarPedido(pedido *models.Pedido, db *sql.DB) error {
 		return erro
 	}
 	return nil
+}
+
+// BuscarLogado busca dados de um pedido
+func BuscarPedido(id int, db *sql.DB) (models.Pedido, error) {
+	sqlStatement := `SELECT id, nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, altura, comprimento, peso, largura, descricao FROM pedidos WHERE id=$1`
+	var pedido models.Pedido
+	if erro := db.QueryRow(sqlStatement, id).Scan(&pedido.Id, &pedido.Nome_remetente, &pedido.Endereco_remetente, &pedido.Nome_destinatario, &pedido.Endereco_destinatario, &pedido.Codigo_rastreamento, &pedido.Altura, &pedido.Comprimento, &pedido.Peso, &pedido.Largura, &pedido.Descricao); erro != nil {
+		if erro == sql.ErrNoRows {
+			return models.Pedido{}, errors.New("Id nao encontrado")
+		}
+		return models.Pedido{}, erro
+	}
+	return pedido, nil
 }
