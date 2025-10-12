@@ -6,10 +6,10 @@ import (
 	"errors"
 )
 
-// CriarUsuario insere um novo pedido no banco de dados
+// CriarPedido insere um novo pedido no banco de dados
 func CriarPedido(pedido *models.Pedido, db *sql.DB) error {
-	sqlStatement := `INSERT INTO pedidos (nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, altura, comprimento, peso, largura, descricao) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`
-	if erro := db.QueryRow(sqlStatement, pedido.Nome_remetente, pedido.Endereco_remetente, pedido.Nome_destinatario, pedido.Endereco_destinatario, pedido.Codigo_rastreamento, pedido.Altura, pedido.Comprimento, pedido.Peso, pedido.Largura, pedido.Descricao).Scan(&pedido.Id); erro != nil {
+	sqlStatement := `INSERT INTO pedidos (id_operador, cpf_cliente, nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, altura, comprimento, peso, largura, descricao) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id`
+	if erro := db.QueryRow(sqlStatement, pedido.Cpf_cliente, pedido.Nome_remetente, pedido.Endereco_remetente, pedido.Nome_destinatario, pedido.Endereco_destinatario, pedido.Codigo_rastreamento, pedido.Altura, pedido.Comprimento, pedido.Peso, pedido.Largura, pedido.Descricao).Scan(&pedido.Id); erro != nil {
 		return erro
 	}
 	return nil
@@ -17,13 +17,37 @@ func CriarPedido(pedido *models.Pedido, db *sql.DB) error {
 
 // BuscarLogado busca dados de um pedido
 func BuscarPedido(id int, db *sql.DB) (models.Pedido, error) {
-	sqlStatement := `SELECT id, nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, altura, comprimento, peso, largura, descricao FROM pedidos WHERE id=$1`
+	sqlStatement := `SELECT id, id_operador, cpf_cliente, nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, status_pedido, altura, comprimento, peso, largura, descricao FROM pedidos WHERE id=$1`
 	var pedido models.Pedido
-	if erro := db.QueryRow(sqlStatement, id).Scan(&pedido.Id, &pedido.Nome_remetente, &pedido.Endereco_remetente, &pedido.Nome_destinatario, &pedido.Endereco_destinatario, &pedido.Codigo_rastreamento, &pedido.Altura, &pedido.Comprimento, &pedido.Peso, &pedido.Largura, &pedido.Descricao); erro != nil {
+	if erro := db.QueryRow(sqlStatement, id).Scan(&pedido.Id, &pedido.Id_operador, &pedido.Cpf_cliente, &pedido.Nome_remetente, &pedido.Endereco_remetente, &pedido.Nome_destinatario, &pedido.Endereco_destinatario, &pedido.Codigo_rastreamento, &pedido.Status_pedido, &pedido.Altura, &pedido.Comprimento, &pedido.Peso, &pedido.Largura, &pedido.Descricao); erro != nil {
 		if erro == sql.ErrNoRows {
 			return models.Pedido{}, errors.New("Id nao encontrado")
 		}
 		return models.Pedido{}, erro
 	}
 	return pedido, nil
+}
+
+// Busca pedidos de um usuário cliente específico
+func BuscarPedidos(db *sql.DB, cpf_cliente string) ([]models.Pedido, error) {
+	sqlStatement := `SELECT id, cpf_cliente, nome_remetente, endereco_remetente, nome_destinatario, endereco_destinatario, codigo_rastreamento, status_pedido, altura, comprimento, peso, largura, descricao FROM pedidos WHERE cpf_cliente=$1`
+	rows, err := db.Query(sqlStatement, cpf_cliente)
+	if err != nil {
+		return []models.Pedido{}, err
+	}
+	defer rows.Close()
+	var pedidos []models.Pedido
+	// Itera sobre as linhas retornadas
+	for rows.Next() {
+		var pedido models.Pedido
+		if err := rows.Scan(&pedido.Id, &pedido.Cpf_cliente, &pedido.Nome_remetente, &pedido.Endereco_remetente, &pedido.Nome_destinatario, &pedido.Endereco_destinatario, &pedido.Codigo_rastreamento, &pedido.Status_pedido, &pedido.Altura, &pedido.Comprimento, &pedido.Peso, &pedido.Largura, &pedido.Descricao); err != nil {
+			return []models.Pedido{}, err
+		}
+		pedidos = append(pedidos, pedido)
+	}
+	// Verifica se ocorreu algum erro durante a iteração
+	if err = rows.Err(); err != nil {
+		return []models.Pedido{}, err
+	}
+	return pedidos, nil
 }

@@ -16,6 +16,7 @@ type Usuario struct {
 	Email    string `json:"email,omitempty"`
 	Senha    string `json:"senha,omitempty"`
 	Endereco string `json:"endereco,omitempty"`
+	Perfil   string `json:"perfil,omitempty"`
 }
 
 // Validar valida formato e tamanho dos dados, remove espaços em branco e criptografa a senha
@@ -65,8 +66,9 @@ func (u *Usuario) ValidarLogin() error {
 }
 
 type RespostaLogin struct {
-	Id    int    `json:"id"`
-	Token string `json:"token"`
+	Id     int    `json:"id"`
+	Token  string `json:"token"`
+	Perfil string `json:"perfil"`
 }
 type Senhas struct {
 	SenhaAtual string `json:"senha_atual,omitempty"`

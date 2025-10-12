@@ -79,23 +79,23 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	// Chamando repositories para buscar senha para comparação
-	IdESenha, erro := repositories.BuscarIdESenhaPorEmail(usuario.Email, db)
+	IdESenhaEPerfil, erro := repositories.BuscarIdESenhaPorEmail(usuario.Email, db)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	// Verificando se senha está correta
-	if erro = security.VerificarSenha(IdESenha.Senha, usuario.Senha); erro != nil {
+	if erro = security.VerificarSenha(IdESenhaEPerfil.Senha, usuario.Senha); erro != nil {
 		responses.RespostaDeErro(w, http.StatusUnauthorized, erro)
 		return
 	}
 	// Gerando token
-	token, erro := auth.GerarToken(IdESenha.Id)
+	token, erro := auth.GerarToken(IdESenhaEPerfil.Id)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	resposta := models.RespostaLogin{Id: IdESenha.Id, Token: token}
+	resposta := models.RespostaLogin{Id: IdESenhaEPerfil.Id, Token: token, Perfil: IdESenhaEPerfil.Perfil}
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusOK, resposta)
 }
