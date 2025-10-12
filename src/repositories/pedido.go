@@ -75,3 +75,14 @@ func BuscarPedidosOperador(db *sql.DB, id int) ([]models.Pedido, error) {
 	}
 	return pedidos, nil
 }
+
+// Cria notificação de criação de pedido
+func NotificacaoCriacao(id int, db *sql.DB) error {
+	conteudo := "Sua encomenda foi criada, veja detalhes aqui"
+	sqlStatement := `INSERT INTO notificacoes (id_pedido, conteudo) VALUES ($1, $2)`
+	_, err := db.Exec(sqlStatement, id, conteudo)
+	if err != nil {
+		return err
+	}
+	return nil
+}

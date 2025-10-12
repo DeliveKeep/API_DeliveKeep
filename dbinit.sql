@@ -24,6 +24,13 @@ CREATE TABLE IF NOT EXISTS pedidos (
     peso REAL NOT NULL,
     largura REAL NOT NULL,
     descricao VARCHAR(255) NOT NULL,
-    FOREIGN KEY (cpf_cliente) REFERENCES usuarios(cpf)
+    FOREIGN KEY (cpf_cliente) REFERENCES usuarios(cpf),
     FOREIGN KEY (id_operador) REFERENCES usuarios(id)
 )
+
+CREATE TABLE IF NOT EXISTS notificacoes (
+    id_notificacao SERIAL PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    conteudo VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id)
+);

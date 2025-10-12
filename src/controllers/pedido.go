@@ -53,6 +53,11 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
+	// Criar a notificação de criação do pedido
+	if erro = repositories.NotificacaoCriacao(pedido.Id, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusCreated, pedido)
 }
