@@ -19,7 +19,7 @@ func PedidosRouter() chi.Router {
 
 	r.Get("/", controllers.BuscarPedidos)
 
-	//r.Get("/operador", controllers.BuscarPedidosOperador)
+	r.Get("/operador", controllers.BuscarPedidosOperador)
 
 	return r
 }

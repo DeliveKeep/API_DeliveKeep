@@ -109,3 +109,24 @@ func BuscarPedidos(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
+
+// Busca pedidos do usuário logado operador
+func BuscarPedidosOperador(w http.ResponseWriter, r *http.Request) {
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Extraindo id do logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarPedidosOperador(db, idLogado)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
