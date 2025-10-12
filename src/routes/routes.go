@@ -8,11 +8,11 @@ import (
 func Rotear() chi.Router {
 	r := chi.NewRouter()
 
-	// /usuarios
-
 	r.Mount("/usuarios", UsuariosRouter())
 
 	r.Mount("/pedidos", PedidosRouter())
+
+	r.Mount("/notificacoes", NotificacoesRouter())
 
 	return r
 }
