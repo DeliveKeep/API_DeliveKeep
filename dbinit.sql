@@ -46,11 +46,11 @@ CREATE TABLE IF NOT EXISTS encomendas (
     peso REAL NOT NULL,
     largura REAL NOT NULL,
     descricao VARCHAR(255) NOT NULL,
-    cpf_cliente INT NOT NULL,
-    id_galpao INT NOT NULL,
+    cpf_cliente VARCHAR(14) NOT NULL,
+    galpao INT NOT NULL,
     FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
     FOREIGN KEY (galpao) REFERENCES galpoes(id_galpao) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS notificacoes (
     id_notificacao SERIAL PRIMARY KEY,
