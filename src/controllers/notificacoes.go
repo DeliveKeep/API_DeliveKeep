@@ -3,6 +3,7 @@ package controllers
 import (
 	"API/src/config"
 	"API/src/database"
+	"API/src/repositories"
 	"API/src/responses"
 	"net/http"
 )
