@@ -22,14 +22,15 @@ func Autenticar(proximaFunc http.Handler) http.Handler {
 			return
 		}
 
-		// Buscando id do usuário logado do token
-		idLogado, erro := auth.Extrairid(token)
+		// Buscando id e permissao do usuário logado do token
+		idLogado, permissaoLogado, erro := auth.ExtrairIDePermissao(token)
 		if erro != nil {
 			responses.RespostaDeErro(w, http.StatusUnauthorized, erro)
 			return
 		}
-		// Salvando id no contexto da requisição
+		// Salvando id e permissao no contexto da requisição
 		ctx := context.WithValue(r.Context(), config.IdKey, idLogado)
+		ctx = context.WithValue(ctx, config.PermissaoKey, permissaoLogado)
 		proximaFunc.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

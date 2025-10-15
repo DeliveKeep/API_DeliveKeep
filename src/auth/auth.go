@@ -12,8 +12,8 @@ import (
 )
 
 // GerarToken gera um token guardando id do usuário logado
-func GerarToken(id int) (string, error) {
-	claims := jwt.MapClaims{"id": id, "criacao": time.Now().UnixNano()}
+func GerarToken(id int, permissao string) (string, error) {
+	claims := jwt.MapClaims{"id": id, "permissao": permissao, "criacao": time.Now().UnixNano()}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(config.ChaveSecreta)
 }
@@ -36,7 +36,7 @@ func ValidarToken(tokenString string) error {
 }
 
 // Extrairid extrai id do usuario logado e valida o token
-func Extrairid(tokenString string) (int, error) {
+func ExtrairIDePermissao(tokenString string) (int, string, error) {
 	// Parse o token para decodificá-lo e validá-lo
 	token, erro := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Verifica se o método de assinatura é HS256
@@ -47,19 +47,24 @@ func Extrairid(tokenString string) (int, error) {
 	})
 
 	if erro != nil {
-		return 0, erro
+		return 0, "", erro
 	}
 
 	// Verifica se o token é válido e acessa os claims
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// Extrai a matrícula do usuário dos claims
-		if id, ok := claims["id"].(float64); ok { // JSON decodifica números como float64
-			return int(id), nil
+		// Extrai o id e a permissão do usuário dos claims
+		idFloat, okId := claims["id"].(float64)
+		permissao, okPerm := claims["permissao"].(string)
+		if !okId {
+			return 0, "", fmt.Errorf("campo 'id' não encontrado ou inválido")
 		}
-		return 0, fmt.Errorf("campo 'id' não encontrado ou invalido")
+		if !okPerm {
+			return 0, "", fmt.Errorf("campo 'permissao' não encontrado ou inválido")
+		}
+		return int(idFloat), permissao, nil
 	}
 
-	return 0, fmt.Errorf("token invalido")
+	return 0, "", fmt.Errorf("token invalido")
 }
 
 // ExtrairToken extrai o token do cabeçalho da requisição
