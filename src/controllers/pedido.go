@@ -7,6 +7,7 @@ import (
 	"API/src/repositories"
 	"API/src/responses"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strconv"
@@ -24,9 +25,15 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando
-	var pedido models.Pedido
+	var pedido models.Encomenda
 	if erro = json.Unmarshal(corpoReq, &pedido); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo permissao do logado do contexto da requisição
+	permissao := r.Context().Value(config.PermissaoKey).(string)
+	if permissao != "o" && permissao != "a" {
+		responses.RespostaDeErro(w, http.StatusForbidden, errors.New("permissão negada"))
 		return
 	}
 	// Abrindo conexão com banco de dados
@@ -36,18 +43,6 @@ func CriarPedido(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer db.Close()
-	// Extraindo id do logado do contexto da requisição
-	idLogado := r.Context().Value(config.IdKey).(int)
-	pedido.Id_operador = idLogado
-	perfil, erro := repositories.Perfil(db, idLogado)
-	if erro != nil {
-		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
-		return
-	}
-	if perfil != "o" {
-		responses.RespostaDeErro(w, http.StatusForbidden, erro)
-		return
-	}
 	// Chamando repositories para inserir dados no banco de dados
 	if erro = repositories.CriarPedido(&pedido, db); erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
@@ -88,8 +83,8 @@ func BuscarPedido(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
 
-// Busca pedidos do usuário logado
-func BuscarPedidos(w http.ResponseWriter, r *http.Request) {
+// Busca pedidos do cliente logado
+func BuscarPedidosCliente(w http.ResponseWriter, r *http.Request) {
 	// Abrindo conexão com banco de dados
 	db, erro := database.ConectarDB()
 	if erro != nil {
@@ -115,8 +110,14 @@ func BuscarPedidos(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
 
-// Busca pedidos do usuário logado operador
-func BuscarPedidosOperador(w http.ResponseWriter, r *http.Request) {
+// Busca pedidos de um galpão
+func BuscarPedidosGalpao(w http.ResponseWriter, r *http.Request) {
+	// Extraindo permissao do logado do contexto da requisição
+	permissao := r.Context().Value(config.PermissaoKey).(string)
+	if permissao != "o" && permissao != "a" {
+		responses.RespostaDeErro(w, http.StatusForbidden, errors.New("permissão negada"))
+		return
+	}
 	// Abrindo conexão com banco de dados
 	db, erro := database.ConectarDB()
 	if erro != nil {
@@ -126,8 +127,14 @@ func BuscarPedidosOperador(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	// Extraindo id do logado do contexto da requisição
 	idLogado := r.Context().Value(config.IdKey).(int)
+	// Buscando galpão do operador
+	idGalpao, erro := repositories.BuscarIdGalpao(idLogado, permissao, db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
 	// Chamando repositories para buscar dados do usuário logado
-	dados, erro := repositories.BuscarPedidosOperador(db, idLogado)
+	dados, erro := repositories.BuscarPedidosGalpao(db, idGalpao)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return

@@ -10,7 +10,7 @@ func Rotear() chi.Router {
 
 	r.Mount("/clientes", UsuariosRouter())
 
-	r.Mount("/pedidos", PedidosRouter())
+	r.Mount("/encomendas", PedidosRouter())
 
 	r.Mount("/notificacoes", NotificacoesRouter())
 
