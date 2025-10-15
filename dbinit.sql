@@ -1,22 +1,44 @@
-CREATE TABLE IF NOT EXISTS usuarios (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS clientes (
+    id_cliente SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(14),
+    cpf VARCHAR(14) UNIQUE NOT NULL,
     endereco VARCHAR(255) NOT NULL,
     telefone CHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    senha VARCHAR(128) NOT NULL,
-    perfil VARCHAR(1) NOT NULL
+    senha VARCHAR(128) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS pedidos (
-    id SERIAL PRIMARY KEY,
-    id_operador INT NOT NULL,
-    cpf_cliente INT NOT NULL,
+CREATE TABLE IF NOT EXISTS galpoes (
+    id_galpao SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    endereco VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS operadores (
+    id_operador SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone CHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(128) NOT NULL,
+    galpao INT NOT NULL,
+    FOREIGN KEY (galpao) REFERENCES galpoes(id_galpao) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS administradores (
+    id_administrador SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone CHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(128) NOT NULL,
+    galpao INT NOT NULL,
+    FOREIGN KEY (galpao) REFERENCES galpoes(id_galpao) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS encomendas (
+    id_encomenda SERIAL PRIMARY KEY,
     nome_remetente VARCHAR(100) NOT NULL,
     endereco_remetente VARCHAR(255) NOT NULL,
-    nome_destinatario VARCHAR(100) NOT NULL,
-    endereco_destinatario VARCHAR(255) NOT NULL,
     codigo_rastreamento VARCHAR(25) NOT NULL,
     status_pedido VARCHAR(255) NOT NULL DEFAULT 'Pedido criado',
     altura REAL NOT NULL,
@@ -24,13 +46,15 @@ CREATE TABLE IF NOT EXISTS pedidos (
     peso REAL NOT NULL,
     largura REAL NOT NULL,
     descricao VARCHAR(255) NOT NULL,
-    FOREIGN KEY (cpf_cliente) REFERENCES usuarios(cpf),
-    FOREIGN KEY (id_operador) REFERENCES usuarios(id)
+    cpf_cliente INT NOT NULL,
+    id_galpao INT NOT NULL,
+    FOREIGN KEY (cpf_cliente) REFERENCES clientes(cpf) ON DELETE CASCADE,
+    FOREIGN KEY (galpao) REFERENCES galpoes(id_galpao) ON DELETE CASCADE
 )
 
 CREATE TABLE IF NOT EXISTS notificacoes (
     id_notificacao SERIAL PRIMARY KEY,
-    id_pedido INT NOT NULL,
+    id_encomenda INT NOT NULL,
     conteudo VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id)
+    FOREIGN KEY (id_encomenda) REFERENCES encomendas(id_encomenda)
 );
