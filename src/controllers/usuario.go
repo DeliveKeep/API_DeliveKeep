@@ -26,7 +26,7 @@ func CriarUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando
-	var usuario models.Usuario
+	var usuario models.Cliente
 	if erro = json.Unmarshal(corpoReq, &usuario); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
@@ -62,7 +62,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct
-	var usuario models.Usuario
+	var usuario models.Cliente
 	if erro = json.Unmarshal(corpoReq, &usuario); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
@@ -79,23 +79,24 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	// Chamando repositories para buscar senha para comparação
-	IdESenhaEPerfil, erro := repositories.BuscarIdESenhaPorEmail(usuario.Email, db)
+	IdESenha, erro := repositories.BuscarIdESenhaPorEmail(usuario.Email, db)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
 	// Verificando se senha está correta
-	if erro = security.VerificarSenha(IdESenhaEPerfil.Senha, usuario.Senha); erro != nil {
+	if erro = security.VerificarSenha(IdESenha.Senha, usuario.Senha); erro != nil {
 		responses.RespostaDeErro(w, http.StatusUnauthorized, erro)
 		return
 	}
 	// Gerando token
-	token, erro := auth.GerarToken(IdESenhaEPerfil.Id)
+	permissao := "c"
+	token, erro := auth.GerarToken(IdESenha.Id, permissao)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	resposta := models.RespostaLogin{Id: IdESenhaEPerfil.Id, Token: token, Perfil: IdESenhaEPerfil.Perfil}
+	resposta := models.RespostaLogin{Id: IdESenha.Id, Token: token}
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusOK, resposta)
 }
@@ -147,7 +148,7 @@ func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
 
-// BuscarLogado busca dados de um usuário logado
+// BuscarUsuarios busca dados de todos usuários
 func BuscarUsuarios(w http.ResponseWriter, r *http.Request) {
 	// Abrindo conexão com banco de dados
 	db, erro := database.ConectarDB()
@@ -250,7 +251,7 @@ func AtualizarNome(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando dados
-	var nome models.Usuario
+	var nome models.Cliente
 	if erro = json.Unmarshal(corpoReq, &nome); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
@@ -288,7 +289,7 @@ func AtualizarEndereco(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando dados
-	var endereco models.Usuario
+	var endereco models.Cliente
 	if erro = json.Unmarshal(corpoReq, &endereco); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
@@ -322,7 +323,7 @@ func AtualizarTelefone(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando dados
-	var telefone models.Usuario
+	var telefone models.Cliente
 	if erro = json.Unmarshal(corpoReq, &telefone); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
@@ -356,7 +357,7 @@ func AtualizarEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// Passando para struct e validando dados
-	var email models.Usuario
+	var email models.Cliente
 	if erro = json.Unmarshal(corpoReq, &email); erro != nil {
 		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
 		return
