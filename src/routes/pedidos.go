@@ -21,5 +21,7 @@ func PedidosRouter() chi.Router {
 
 	r.Get("/galpao", controllers.BuscarPedidosGalpao)
 
+	r.Put("/{id}", controllers.AtualizarEncomenda)
+
 	return r
 }

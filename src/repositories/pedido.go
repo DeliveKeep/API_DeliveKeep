@@ -106,3 +106,35 @@ func BuscarIdGalpao(id int, permissao string, db *sql.DB) (int, error) {
 	}
 	return galpao, nil
 }
+
+// Atualiza dados de uma encomenda
+func AtualizarEncomenda(pedido models.Encomenda, id int, db *sql.DB) error {
+	sqlStatement := `
+	UPDATE encomendas
+	SET
+		cpf_cliente = $1,
+		nome_remetente = $2,
+		endereco_remetente = $3,
+		codigo_rastreamento = $4,
+		altura = $5,
+		comprimento = $6,
+		peso = $7,
+		largura = $8,
+		descricao = $9,
+		galpao = $10
+	WHERE id_encomenda = $11;
+	`
+	result, erro := db.Exec(sqlStatement, pedido.Cpf_cliente, pedido.Nome_remetente, pedido.Endereco_remetente, pedido.Codigo_rastreamento, pedido.Altura, pedido.Comprimento, pedido.Peso, pedido.Largura, pedido.Descricao, pedido.Id_galpao, id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
