@@ -279,7 +279,7 @@ func AtualizarNome(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
 
-// AtualizarEndereco atualiza Nome de um usuário
+// AtualizarEndereco atualiza endereço de um usuário
 func AtualizarEndereco(w http.ResponseWriter, r *http.Request) {
 	// Lendo corpo da requisição
 	corpoReq, erro := io.ReadAll(r.Body)
@@ -313,7 +313,7 @@ func AtualizarEndereco(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
 
-// AtualizarTelefone atualiza Nome de um usuário
+// AtualizarTelefone atualiza telefone de um usuário
 func AtualizarTelefone(w http.ResponseWriter, r *http.Request) {
 	// Lendo corpo da requisição
 	corpoReq, erro := io.ReadAll(r.Body)
