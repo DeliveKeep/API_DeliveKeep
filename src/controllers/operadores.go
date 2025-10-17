@@ -239,3 +239,41 @@ func AtualizarSenhaOperador(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// AtualizarNome atualiza Nome de um usuário
+func AtualizarNomeOperador(w http.ResponseWriter, r *http.Request) {
+	// Lendo corpo da requisição
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+	// Passando para struct e validando dados
+	var nome models.Operador
+	if erro = json.Unmarshal(corpoReq, &nome); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	if erro = nome.ValidarNome(); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	nome.Id = idLogado
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para atualizar dados no banco de dados
+	if erro = repositories.AtualizarNomeOperador(nome, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}
