@@ -18,5 +18,7 @@ func Rotear() chi.Router {
 
 	r.Mount("/notificacoes", NotificacoesRouter())
 
+	r.Mount("/galpoes", GalpoesRouter())
+
 	return r
 }

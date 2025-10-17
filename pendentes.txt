@@ -1,2 +1,0 @@
-documentação openapi das rotas feitas
-crud administrador
