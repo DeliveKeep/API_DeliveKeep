@@ -64,3 +64,20 @@ func BuscarAdministradorLogado(id int, db *sql.DB) (models.Administrador, error)
 	}
 	return usuario, nil
 }
+
+// Deleta um usuario
+func DeletarAdministrador(id int, db *sql.DB) error {
+	sqlStatement := `DELETE FROM administradores WHERE id_administrador=$1`
+	result, erro := db.Exec(sqlStatement, id)
+	if erro != nil {
+		return erro
+	}
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario logado nao existe")
+	}
+	return nil
+}
