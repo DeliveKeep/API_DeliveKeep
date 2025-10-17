@@ -186,3 +186,57 @@ func DeletarAdministrador(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// Atualiza senha de um usuário
+func AtualizarSenhaAdministrador(w http.ResponseWriter, r *http.Request) {
+	// Lendo corpo da requisição
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+	// Passando para struct e validando dados
+	var senhas models.Senhas
+	if erro = json.Unmarshal(corpoReq, &senhas); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	if erro = senhas.ValidarSenhas(); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar senha no banco de dados
+	senhaSalva, erro := repositories.BuscarSenhaPorIdAdministrador(idLogado, db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Vendo se senha salva é igual a recebida
+	if erro = security.VerificarSenha(senhaSalva, senhas.SenhaAtual); erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnauthorized, erro)
+		return
+	}
+	// Criptografando senha nova para guardar no banco
+	senhaNovaHash, erro := security.GerarSenhaComHash(senhas.SenhaNova)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Chamando repositories para atualizar senha no banco
+	if erro = repositories.AtualizarSenhaAdministrador(string(senhaNovaHash), idLogado, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}
