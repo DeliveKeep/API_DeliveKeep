@@ -51,3 +51,27 @@ func BuscarGalpao(id int, db *sql.DB) (models.Galpao, error) {
 	}
 	return galpao, nil
 }
+
+// Atualiza dados de um galpão
+func AtualizarGalpao(galpao models.Galpao, id int, db *sql.DB) error {
+	sqlStatement := `
+	UPDATE galpoes
+	SET
+		nome = $1,
+		endereco = $2
+	WHERE id_galpao = $3;
+	`
+	result, erro := db.Exec(sqlStatement, galpao.Nome, galpao.Endereco, id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
