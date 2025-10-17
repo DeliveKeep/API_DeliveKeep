@@ -8,6 +8,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi"
 )
 
 // Cria um galpão
@@ -52,6 +55,32 @@ func BuscarGalpoes(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	// Chamando repositories para buscar dados do usuário logado
 	dados, erro := repositories.BuscarGalpoes(db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
+
+// Busca dados de um galpão pelo id passado na url
+func BuscarGalpao(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id
+	parametro := chi.URLParam(r, "id")
+	idGalpao, erro := strconv.Atoi(parametro)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do galpao
+	dados, erro := repositories.BuscarGalpao(idGalpao, db)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
