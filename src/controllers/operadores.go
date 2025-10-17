@@ -16,6 +16,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// Cria um operador
 func CriarOperador(w http.ResponseWriter, r *http.Request) {
 	// Lendo corpo da requisição
 	corpoReq, erro := io.ReadAll(r.Body)
