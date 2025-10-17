@@ -27,3 +27,27 @@ func BuscarIdESenhaPorEmailAdministrador(email string, db *sql.DB) (models.Admin
 	}
 	return usuario, nil
 }
+
+// Busca dados de todos os administradores
+func BuscarAdministradores(db *sql.DB) ([]models.Administrador, error) {
+	sqlStatement := `SELECT id_administrador, nome, telefone, email, galpao FROM administradores`
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		return []models.Administrador{}, err
+	}
+	defer rows.Close()
+	var usuarios []models.Administrador
+	// Itera sobre as linhas retornadas
+	for rows.Next() {
+		var usuario models.Administrador
+		if err := rows.Scan(&usuario.Id, &usuario.Nome, &usuario.Telefone, &usuario.Email, &usuario.Galpao); err != nil {
+			return []models.Administrador{}, err
+		}
+		usuarios = append(usuarios, usuario)
+	}
+	// Verifica se ocorreu algum erro durante a iteração
+	if err = rows.Err(); err != nil {
+		return []models.Administrador{}, err
+	}
+	return usuarios, nil
+}
