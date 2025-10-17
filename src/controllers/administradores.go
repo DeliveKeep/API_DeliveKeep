@@ -312,3 +312,41 @@ func AtualizarTelefoneAdministrador(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// Atualiza email de um usuário
+func AtualizarEmailAdministrador(w http.ResponseWriter, r *http.Request) {
+	// Lendo corpo da requisição
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+	// Passando para struct e validando dados
+	var email models.Administrador
+	if erro = json.Unmarshal(corpoReq, &email); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	if erro = email.ValidarEmail(); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	email.Id = idLogado
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para atualizar dados no banco de dados
+	if erro = repositories.AtualizarEmailAdministrador(email, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}
