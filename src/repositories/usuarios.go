@@ -41,7 +41,7 @@ func BuscarLogado(id int, db *sql.DB) (models.Cliente, error) {
 	return usuario, nil
 }
 
-// BuscarLogado busca dados exceto a senha de um usuário pela id
+// Busca dados de todos os usuários
 func BuscarUsuarios(db *sql.DB) ([]models.Cliente, error) {
 	sqlStatement := `SELECT id_cliente, nome, cpf, endereco, telefone, email FROM clientes`
 	rows, err := db.Query(sqlStatement)

@@ -27,3 +27,27 @@ func BuscarIdESenhaPorEmailOperador(email string, db *sql.DB) (models.Operador, 
 	}
 	return usuario, nil
 }
+
+// Busca dados de todos os operadores
+func BuscarOperadores(db *sql.DB) ([]models.Operador, error) {
+	sqlStatement := `SELECT id_operador, nome, telefone, email, galpao FROM operadores`
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		return []models.Operador{}, err
+	}
+	defer rows.Close()
+	var usuarios []models.Operador
+	// Itera sobre as linhas retornadas
+	for rows.Next() {
+		var usuario models.Operador
+		if err := rows.Scan(&usuario.Id, &usuario.Nome, &usuario.Telefone, &usuario.Email, &usuario.Galpao); err != nil {
+			return []models.Operador{}, err
+		}
+		usuarios = append(usuarios, usuario)
+	}
+	// Verifica se ocorreu algum erro durante a iteração
+	if err = rows.Err(); err != nil {
+		return []models.Operador{}, err
+	}
+	return usuarios, nil
+}
