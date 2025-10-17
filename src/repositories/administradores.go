@@ -112,3 +112,21 @@ func AtualizarSenhaAdministrador(senha string, id int, db *sql.DB) error {
 	}
 	return nil
 }
+
+// AtualizarNome atualiza Nome na tabela administradores
+func AtualizarNomeAdministrador(dados models.Administrador, db *sql.DB) error {
+	sqlStatement := `UPDATE administradores SET nome=$1 WHERE id_administrador=$2`
+	result, erro := db.Exec(sqlStatement, dados.Nome, dados.Id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
