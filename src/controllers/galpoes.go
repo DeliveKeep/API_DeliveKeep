@@ -40,3 +40,22 @@ func CriarGalpao(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusCreated, galpao)
 }
+
+// Busca dados de um galpão
+func BuscarGalpoes(w http.ResponseWriter, r *http.Request) {
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarGalpoes(db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
