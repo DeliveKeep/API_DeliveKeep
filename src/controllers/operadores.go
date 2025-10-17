@@ -11,6 +11,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi"
 )
 
 func CriarOperador(w http.ResponseWriter, r *http.Request) {
@@ -129,6 +132,32 @@ func BuscarOperadorLogado(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	// Chamando repositories para buscar dados do usuário logado
 	dados, erro := repositories.BuscarOperadorLogado(idLogado, db)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta
+	responses.RespostaDeSucesso(w, http.StatusOK, dados)
+}
+
+// Busca dados de um usuário pelo id
+func BuscarOperador(w http.ResponseWriter, r *http.Request) {
+	// Extraindo id logado do contexto da requisição
+	parametro := chi.URLParam(r, "id")
+	id, erro := strconv.Atoi(parametro)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para buscar dados do usuário logado
+	dados, erro := repositories.BuscarOperadorLogado(id, db)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return

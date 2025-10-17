@@ -122,7 +122,7 @@ func BuscarLogado(w http.ResponseWriter, r *http.Request) {
 	responses.RespostaDeSucesso(w, http.StatusOK, dados)
 }
 
-// BuscarLogado busca dados de um usuário logado
+// Busca dados de um usuário pelo id
 func BuscarUsuario(w http.ResponseWriter, r *http.Request) {
 	// Extraindo id logado do contexto da requisição
 	parametro := chi.URLParam(r, "id")
