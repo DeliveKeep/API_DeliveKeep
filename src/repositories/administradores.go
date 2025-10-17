@@ -51,3 +51,16 @@ func BuscarAdministradores(db *sql.DB) ([]models.Administrador, error) {
 	}
 	return usuarios, nil
 }
+
+// BuscarLogado busca dados exceto a senha de um usuário pela id
+func BuscarAdministradorLogado(id int, db *sql.DB) (models.Administrador, error) {
+	sqlStatement := `SELECT id_administrador, nome, telefone, email, galpao FROM administradores WHERE id_administrador=$1`
+	var usuario models.Administrador
+	if erro := db.QueryRow(sqlStatement, id).Scan(&usuario.Id, &usuario.Nome, &usuario.Telefone, &usuario.Email, &usuario.Galpao); erro != nil {
+		if erro == sql.ErrNoRows {
+			return models.Administrador{}, errors.New("Id nao encontrado")
+		}
+		return models.Administrador{}, erro
+	}
+	return usuario, nil
+}
