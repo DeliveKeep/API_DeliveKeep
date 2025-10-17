@@ -1,4 +1,3 @@
 documentação openapi das rotas feitas
 crud administrador
 crud operador
-rota editar encomenda

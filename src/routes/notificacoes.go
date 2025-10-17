@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// PedidosRouters retorna roteador com rotas /pedidos
+// PedidosRouters retorna roteador com rotas /notificacoes
 func NotificacoesRouter() chi.Router {
 	r := chi.NewRouter()
 
