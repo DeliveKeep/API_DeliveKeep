@@ -21,8 +21,6 @@ func GalpoesRouter() chi.Router {
 		r.Use(middlewares.Autenticar)
 
 		r.Put("/{id}", controllers.AtualizarGalpao)
-
-		r.Delete("/{id}", controllers.DeletarGalpao)
 	})
 
 	return r
