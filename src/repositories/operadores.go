@@ -64,3 +64,20 @@ func BuscarOperadorLogado(id int, db *sql.DB) (models.Operador, error) {
 	}
 	return usuario, nil
 }
+
+// Deleta um usuario
+func DeletarOperador(id int, db *sql.DB) error {
+	sqlStatement := `DELETE FROM operadores WHERE id_operador=$1`
+	result, erro := db.Exec(sqlStatement, id)
+	if erro != nil {
+		return erro
+	}
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario logado nao existe")
+	}
+	return nil
+}
