@@ -278,3 +278,37 @@ func AtualizarNomeAdministrador(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// Atualiza telefone de um usuário
+func AtualizarTelefoneAdministrador(w http.ResponseWriter, r *http.Request) {
+	// Lendo corpo da requisição
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+	// Passando para struct e validando dados
+	var telefone models.Administrador
+	if erro = json.Unmarshal(corpoReq, &telefone); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo id logado do contexto da requisição
+	idLogado := r.Context().Value(config.IdKey).(int)
+	telefone.Id = idLogado
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para atualizar dados no banco de dados
+	if erro = repositories.AtualizarTelefoneAdministrador(telefone, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}

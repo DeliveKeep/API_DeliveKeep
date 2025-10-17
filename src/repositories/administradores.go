@@ -130,3 +130,21 @@ func AtualizarNomeAdministrador(dados models.Administrador, db *sql.DB) error {
 	}
 	return nil
 }
+
+// Atualiza telefone na tabela administradores
+func AtualizarTelefoneAdministrador(dados models.Administrador, db *sql.DB) error {
+	sqlStatement := `UPDATE administradores SET telefone=$1 WHERE id_administrador=$2`
+	result, erro := db.Exec(sqlStatement, dados.Telefone, dados.Id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}
