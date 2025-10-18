@@ -54,7 +54,7 @@ func BuscarOperadores(db *sql.DB) ([]models.Operador, error) {
 
 // BuscarLogado busca dados exceto a senha de um usuário pela id
 func BuscarOperadorLogado(id int, db *sql.DB) (models.Operador, error) {
-	sqlStatement := `SELECT id_operador, nome, telefone, email, galpao FROM clientes WHERE id_operador=$1`
+	sqlStatement := `SELECT id_operador, nome, telefone, email, galpao FROM operadores WHERE id_operador=$1`
 	var usuario models.Operador
 	if erro := db.QueryRow(sqlStatement, id).Scan(&usuario.Id, &usuario.Nome, &usuario.Telefone, &usuario.Email, &usuario.Galpao); erro != nil {
 		if erro == sql.ErrNoRows {

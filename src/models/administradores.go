@@ -18,7 +18,7 @@ type Administrador struct {
 }
 
 // Validar valida formato e tamanho dos dados, remove espaços em branco e criptografa a senha
-func (u Administrador) Validar() error {
+func (u *Administrador) Validar() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("nome deve ter pelo menos 2 caracteres")
@@ -39,7 +39,7 @@ func (u Administrador) Validar() error {
 }
 
 // ValidarEmail valida email
-func (u Administrador) ValidarEmail() error {
+func (u *Administrador) ValidarEmail() error {
 	if erro := checkmail.ValidateFormat(u.Email); erro != nil {
 		return errors.New("email invalido")
 	}
@@ -47,7 +47,7 @@ func (u Administrador) ValidarEmail() error {
 }
 
 // ValidarNome valida tamanho do nome
-func (u Administrador) ValidarNome() error {
+func (u *Administrador) ValidarNome() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("Nome deve ter pelo menos 2 caractéres")
@@ -56,7 +56,7 @@ func (u Administrador) ValidarNome() error {
 }
 
 // ValidarLogin verifica se dados de login estão presentes
-func (u Administrador) ValidarLogin() error {
+func (u *Administrador) ValidarLogin() error {
 	if u.Email == "" || u.Senha == "" {
 		return errors.New("campos faltando")
 	}

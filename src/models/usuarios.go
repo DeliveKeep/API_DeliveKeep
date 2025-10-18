@@ -19,7 +19,7 @@ type Cliente struct {
 }
 
 // Validar valida formato e tamanho dos dados, remove espaços em branco e criptografa a senha
-func (u Cliente) Validar() error {
+func (u *Cliente) Validar() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("nome deve ter pelo menos 2 caracteres")
@@ -31,6 +31,10 @@ func (u Cliente) Validar() error {
 	if len(u.Senha) < 2 {
 		return errors.New("senha deve ter pelo menos 2 caracteres")
 	}
+	u.Cpf = strings.TrimSpace(u.Cpf)
+	if len(u.Cpf) < 11 {
+		return errors.New("cpf faltando ou incorreto")
+	}
 	senhaHash, erro := security.GerarSenhaComHash(u.Senha)
 	if erro != nil {
 		return erro
@@ -40,7 +44,7 @@ func (u Cliente) Validar() error {
 }
 
 // ValidarEmail valida email
-func (u Cliente) ValidarEmail() error {
+func (u *Cliente) ValidarEmail() error {
 	if erro := checkmail.ValidateFormat(u.Email); erro != nil {
 		return errors.New("email invalido")
 	}
@@ -48,7 +52,7 @@ func (u Cliente) ValidarEmail() error {
 }
 
 // ValidarNome valida tamanho do nome
-func (u Cliente) ValidarNome() error {
+func (u *Cliente) ValidarNome() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("Nome deve ter pelo menos 2 caractéres")
@@ -57,7 +61,7 @@ func (u Cliente) ValidarNome() error {
 }
 
 // ValidarLogin verifica se dados de login estão presentes
-func (u Cliente) ValidarLogin() error {
+func (u *Cliente) ValidarLogin() error {
 	if u.Email == "" || u.Senha == "" {
 		return errors.New("campos faltando")
 	}

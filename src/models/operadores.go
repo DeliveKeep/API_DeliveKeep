@@ -18,7 +18,7 @@ type Operador struct {
 }
 
 // Validar valida formato e tamanho dos dados, remove espaços em branco e criptografa a senha
-func (u Operador) Validar() error {
+func (u *Operador) Validar() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("nome deve ter pelo menos 2 caracteres")
@@ -39,7 +39,7 @@ func (u Operador) Validar() error {
 }
 
 // ValidarEmail valida email
-func (u Operador) ValidarEmail() error {
+func (u *Operador) ValidarEmail() error {
 	if erro := checkmail.ValidateFormat(u.Email); erro != nil {
 		return errors.New("email invalido")
 	}
@@ -47,7 +47,7 @@ func (u Operador) ValidarEmail() error {
 }
 
 // ValidarNome valida tamanho do nome
-func (u Operador) ValidarNome() error {
+func (u *Operador) ValidarNome() error {
 	u.Nome = strings.TrimSpace(u.Nome)
 	if len(u.Nome) < 2 {
 		return errors.New("Nome deve ter pelo menos 2 caractéres")
@@ -56,7 +56,7 @@ func (u Operador) ValidarNome() error {
 }
 
 // ValidarLogin verifica se dados de login estão presentes
-func (u Operador) ValidarLogin() error {
+func (u *Operador) ValidarLogin() error {
 	if u.Email == "" || u.Senha == "" {
 		return errors.New("campos faltando")
 	}

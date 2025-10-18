@@ -111,7 +111,7 @@ func BuscarAdministradores(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	// Chamando repositories para buscar dados do usuário logado
-	dados, erro := repositories.BuscarOperadores(db)
+	dados, erro := repositories.BuscarAdministradores(db)
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return

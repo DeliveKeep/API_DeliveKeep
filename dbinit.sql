@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(14) UNIQUE NOT NULL,
     endereco VARCHAR(255) NOT NULL,
-    telefone CHAR(20) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(128) NOT NULL
 );
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS galpoes (
 CREATE TABLE IF NOT EXISTS operadores (
     id_operador SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    telefone CHAR(20) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(128) NOT NULL,
     galpao INT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS operadores (
 CREATE TABLE IF NOT EXISTS administradores (
     id_administrador SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    telefone CHAR(20) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     senha VARCHAR(128) NOT NULL,
     galpao INT NOT NULL,
