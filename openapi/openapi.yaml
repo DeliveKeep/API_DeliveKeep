@@ -7,12 +7,12 @@ servers:
   - url: http://localhost:5000
     description: Servidor local de desenvolvimento
 paths:
-  /usuarios/login:
+  /clientes/login:
     post:
-      summary: Login
+      summary: Login cliente
       description: Verifica dados e retorna ou não token e id do logado
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -66,12 +66,12 @@ paths:
                   erro:
                     type: string
                     example: senha incorreta
-  /usuarios:
+  /clientes:
     post:
-      summary: Cadastrar usuário
-      description: Cadastra um novo usuário e retorna seus dados
+      summary: Cadastrar cliente
+      description: Cadastra um novo cliente e retorna seus dados
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -116,13 +116,13 @@ paths:
                     type: string
                     example: erro no servidor
     get:
-      summary: Listar usuários
-      description: Lista todos usuários cadastrados
+      summary: Listar clientes
+      description: Lista todos clientes cadastrados
       tags:
-        - Usuários
+        - Clientes
       responses:
         '200':
-          description: Usuários listados
+          description: Clientes listados
           content:
             application/json:
               schema:
@@ -149,17 +149,17 @@ paths:
                   erro:
                     type: string
                     example: erro no servidor
-  /usuarios/me:
+  /clientes/me:
     get:
-      summary: Buscar usuário logado
-      description: Busca dados exceto a senha do usuário logado
+      summary: Buscar cliente logado
+      description: Busca dados exceto a senha do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       responses:
         '200':
-          description: Dados do usuário buscados
+          description: Dados do cliente buscados
           content:
             application/json:
               schema:
@@ -185,15 +185,15 @@ paths:
                     type: string
                     example: token faltando no cabeçalho
     delete:
-      summary: Deletar usuário logado
-      description: Deleta dados do usuário logado
+      summary: Deletar cliente logado
+      description: Deleta dados do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       responses:
         '204':
-          description: usário deletado (sem conteúdo)
+          description: cliente deletado (sem conteúdo)
         '500':
           description: Erro no servidor
           content:
@@ -214,18 +214,18 @@ paths:
                   erro:
                     type: string
                     example: token faltando no cabeçalho
-  /usuarios/{id}:
+  /clientes/{id}:
     get:
-      summary: Buscar usuário por id
-      description: Busca dados exceto a senha de um usuário por id
+      summary: Buscar cliente por id
+      description: Busca dados exceto a senha de um cliente por id
       parameters:
         - $ref: './components/parameters/jwt.yaml'
         - $ref: './components/parameters/id_usuario.yaml'
       tags:
-        - Usuários
+        - Clientes
       responses:
         '200':
-          description: Dados do usuário buscados
+          description: Dados do cliente buscados
           content:
             application/json:
               schema:
@@ -250,14 +250,14 @@ paths:
                   erro:
                     type: string
                     example: token faltando no cabeçalho
-  /usuarios/nome:
+  /clientes/nome:
     patch:
-      summary: Atualizar nome do usuário
-      description: Atualiza nome do usuário logado
+      summary: Atualizar nome do cliente
+      description: Atualiza nome do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -312,14 +312,14 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
-  /usuarios/endereco:
+  /clientes/endereco:
     patch:
-      summary: Atualizar endereco do usuário
-      description: Atualiza endereco do usuário logado
+      summary: Atualizar endereco do cliente
+      description: Atualiza endereco do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -364,14 +364,14 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
-  /usuarios/telefone:
+  /clientes/telefone:
     patch:
-      summary: Atualizar telefone do usuário
-      description: Atualiza telefone do usuário logado
+      summary: Atualizar telefone do cliente
+      description: Atualiza telefone do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -416,14 +416,14 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
-  /usuarios/email:
+  /clientes/email:
     patch:
-      summary: Atualizar email do usuário
-      description: Atualiza email do usuário logado
+      summary: Atualizar email do cliente
+      description: Atualiza email do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:
@@ -479,14 +479,14 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
-  /usuarios/senha:
+  /clientes/senha:
     patch:
       summary: Atualizar senha
-      description: Atualiza a senha do usuário logado
+      description: Atualiza a senha do cliente logado
       parameters:
         - $ref: './components/parameters/jwt.yaml'
       tags:
-        - Usuários
+        - Clientes
       requestBody:
         required: true
         content:

@@ -1,8 +1,8 @@
 type: object
 properties:
-  usuario:
+  email:
     type: string
-    example: Fulano123
+    format: email
   senha:
     type: string
     format: password
