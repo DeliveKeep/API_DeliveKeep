@@ -536,3 +536,482 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
+  /operadores/login:
+    post:
+      summary: Login operador
+      description: Verifica dados e retorna ou não token e id do logado
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/login/login_req_body.yaml'
+      responses:
+        '200':
+          description: Login efetuado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/login/login_res.yaml' 
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário com esse email não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha incorreta
+  /operadores:
+    post:
+      summary: Cadastrar operador
+      description: Cadastra um novo operador e retorna seus dados
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/operadores/cadastrar_operador_req_body.yaml'
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/operadores/cadastrar_operador_res.yaml'
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: algum campo no formato inválido ou com poucos caracteres
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+    get:
+      summary: Listar operadores
+      description: Lista todos operadores cadastrados
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      responses:
+        '200':
+          description: Operadores listados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/operadores/nao_sensiveis.yaml'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /operadores/me:
+    get:
+      summary: Buscar operador logado
+      description: Busca dados exceto a senha do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      responses:
+        '200':
+          description: Dados do operador buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/operadores/nao_sensiveis.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+    delete:
+      summary: Deletar operador logado
+      description: Deleta dados do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      responses:
+        '204':
+          description: operador deletado (sem conteúdo)
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /operadores/{id}:
+    get:
+      summary: Buscar operador por id
+      description: Busca dados exceto a senha de um operador por id
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_usuario.yaml'
+      tags:
+        - Operadores
+      responses:
+        '200':
+          description: Dados do operador buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/operadores/nao_sensiveis.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /operadores/nome:
+    patch:
+      summary: Atualizar nome do operador
+      description: Atualiza nome do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+              required:
+                - nome
+      responses:
+        '204':
+          description: nome atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: nome com menos de 2 caracteres
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /operadores/telefone:
+    patch:
+      summary: Atualizar telefone do operador
+      description: Atualiza telefone do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                telefone:
+                  type: string
+              required:
+                - telefone
+      responses:
+        '204':
+          description: telefone atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /operadores/email:
+    patch:
+      summary: Atualizar email do operador
+      description: Atualiza email do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '204':
+          description: email atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: email inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /Operadores/senha:
+    patch:
+      summary: Atualizar senha
+      description: Atualiza a senha do operador logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Operadores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/usuarios/atualizar_senha_req_body.yaml'
+      responses:
+        '204':
+          description: Senha atualizada com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha deve ter pelo menos 2 caracteres
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha atual incorreta
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
