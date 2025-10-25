@@ -230,6 +230,16 @@ paths:
             application/json:
               schema:
                 $ref: './components/schemas/usuarios/nao_sensiveis.yaml'
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
         '500':
           description: Erro no servidor
           content:
@@ -624,6 +634,16 @@ paths:
             application/json:
               schema:
                 $ref: './components/schemas/galpoes/criar_galpao_res.yaml'
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
         '500':
           description: Erro no servidor
           content:
@@ -671,6 +691,16 @@ paths:
                   erro:
                     type: string
                     example: campos faltando
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
         '401':
           description: Não autorizado
           content:
@@ -928,6 +958,16 @@ paths:
                 $ref: './components/schemas/operadores/nao_sensiveis.yaml'
         '500':
           description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '404':
+          description: Não encontrado
           content:
             application/json:
               schema:
@@ -1405,6 +1445,16 @@ paths:
             application/json:
               schema:
                 $ref: './components/schemas/operadores/nao_sensiveis.yaml'
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
         '500':
           description: Erro no servidor
           content:
@@ -1659,6 +1709,284 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
+  /encomendas:
+    post:
+      summary: Criar encomenda
+      description: Cria uma encomenda
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Encomendas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/encomendas/criar_encomenda_req_body.yaml'
+      responses:
+        '200':
+          description: Encomenda criada
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/encomendas/criar_encomenda_res.yaml' 
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token ausente ou inválido
+        '403':
+          description: Proibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: permissao negada, somente operadores e administradores podem executar essa ação
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário com esse email não encontrado
+  /encomendas/{id}:
+    get:
+      summary: Buscar encomenda por id
+      description: Busca dados de uma encomenda por id
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_encomenda.yaml'
+      tags:
+        - Encomendas
+      responses:
+        '200':
+          description: Dados da encomenda buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/encomendas/criar_encomenda_res.yaml'
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+    put:
+      summary: Atualizar encomenda
+      description: Atualiza dados de uma encomenda
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_encomenda.yaml'
+      tags:
+        - Encomendas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/encomendas/criar_encomenda_req_body.yaml'
+      responses:
+        '204':
+          description: Encomenda atualizada
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '403':
+          description: Proibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: permissao negada, apenas administradores podem fazer essa ação
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor de banco de dados
+  /encomendas/cliente:
+    get:
+      summary: Listar encomendas do cliente logado
+      description: Lista todas encomendas do cliente logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Encomendas
+      responses:
+        '200':
+          description: Encomendas listadas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/encomendas/criar_encomenda_res.yaml'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /encomendas/galpao:
+    get:
+      summary: Listar encomendas do galpao
+      description: Lista todas encomendas do galpao onde o usário logado trabalha
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Encomendas
+      responses:
+        '200':
+          description: Encomendas listadas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/encomendas/criar_encomenda_res.yaml'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '403':
+          description: Proibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: permissao negada, apenas administradores podem fazer essa ação
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
   /notificacoes:
     get:
       summary: Listar notificacoes do cliente logado

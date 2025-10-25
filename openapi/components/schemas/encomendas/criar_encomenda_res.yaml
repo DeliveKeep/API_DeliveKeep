@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+  nome_remetente:
+    type: string
+  endereco_remetente:
+    type: string
+  codigo_rastreamento:
+    type: string
+  status_pedido:
+    type: string
+  altura:
+    type: number
+  comprimento:
+    type: number
+  peso:
+    type: number
+  largura:
+    type: number
+  descricao:
+    type: string
+  cpf_cliente:
+    type: string
+  id_galpao:
+    type: integer
