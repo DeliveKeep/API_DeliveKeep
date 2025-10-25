@@ -1,0 +1,9 @@
+type: object
+properties:
+  nome:
+    type: string
+  endereco:
+    type: string
+required:
+  - nome
+  - endereco

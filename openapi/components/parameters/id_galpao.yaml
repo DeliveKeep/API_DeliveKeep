@@ -1,0 +1,6 @@
+name: id
+in: path
+required: true
+description: id do galpão
+schema:
+  type: integer

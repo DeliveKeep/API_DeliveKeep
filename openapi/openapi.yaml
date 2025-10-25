@@ -536,6 +536,171 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
+  /galpoes:
+    post:
+      summary: Criar Galpão
+      description: Cria um galpão
+      tags:
+        - Galpões
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/galpoes/criar_galpao_req_body.yaml'
+      responses:
+        '200':
+          description: Galpão criado
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/galpoes/criar_galpao_res.yaml' 
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor de banco de dados
+    get:
+      summary: Listar galpões
+      description: Lista todos galpões cadastrados
+      tags:
+        - Galpões
+      responses:
+        '200':
+          description: Galpões listados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/galpoes/criar_galpao_res.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /galpoes/{id}:
+    get:
+      summary: Buscar galpão por id
+      description: Busca dados de um galpão pelo id
+      parameters:
+        - $ref: './components/parameters/id_galpao.yaml'
+      tags:
+        - Galpões
+      responses:
+        '200':
+          description: Dados do galpão buscados
+          content:
+            application/json:
+              schema:
+                $ref: './components/schemas/galpoes/criar_galpao_res.yaml'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+    put:
+      summary: Atualizar galpão
+      description: Atualiza nome e ou endereço de um galpão
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_galpao.yaml'
+      tags:
+        - Galpões
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/galpoes/criar_galpao_req_body.yaml'
+      responses:
+        '204':
+          description: Galpão atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '403':
+          description: Proibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: permissao negada, apenas administradores podem fazer essa ação
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor de banco de dados
   /operadores/login:
     post:
       summary: Login operador
