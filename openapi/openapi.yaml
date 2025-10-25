@@ -1659,3 +1659,40 @@ paths:
                   erro:
                     type: string
                     example: usuário não encontrado para atualizar dados
+  /notificacoes:
+    get:
+      summary: Listar notificacoes do cliente logado
+      description: Lista todas notificacoes do cliente logado
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+      tags:
+        - Notificacoes
+      responses:
+        '200':
+          description: Notificacoes listados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './components/schemas/notificacoes/notificacoes.yaml'
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
