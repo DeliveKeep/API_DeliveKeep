@@ -138,3 +138,26 @@ func AtualizarEncomenda(pedido models.Encomenda, id int, db *sql.DB) error {
 	}
 	return nil
 }
+
+// Atualiza status de uma encomenda
+func AtualizarStatus(pedido models.Encomenda, id int, db *sql.DB) error {
+	sqlStatement := `
+	UPDATE encomendas
+	SET
+		status_pedido = $1
+	WHERE id_encomenda = $2;
+	`
+	result, erro := db.Exec(sqlStatement, pedido.Status_pedido, id)
+	if erro != nil {
+		return erro
+	}
+	// Verifica se alguma linha foi atualizada
+	rowsAffected, erro := result.RowsAffected()
+	if erro != nil {
+		return erro // Retorna erro se não foi possível verificar as linhas afetadas
+	}
+	if rowsAffected == 0 {
+		return errors.New("usuario nao encontrado para atualizar dados")
+	}
+	return nil
+}

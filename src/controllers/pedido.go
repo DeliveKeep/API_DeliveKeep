@@ -186,3 +186,47 @@ func AtualizarEncomenda(w http.ResponseWriter, r *http.Request) {
 	// Enviando resposta de sucesso
 	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
 }
+
+// Atualiza status de uma encomenda
+func AtualizarStatus(w http.ResponseWriter, r *http.Request) {
+	// Extraindo permissao do logado do contexto da requisição
+	permissao := r.Context().Value(config.PermissaoKey).(string)
+	if permissao != "o" && permissao != "a" {
+		responses.RespostaDeErro(w, http.StatusForbidden, errors.New("permissão negada"))
+		return
+	}
+	// Lendo corpo da requisição
+	corpoReq, erro := io.ReadAll(r.Body)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+	defer r.Body.Close()
+	// Passando para struct e validando
+	var pedido models.Encomenda
+	if erro = json.Unmarshal(corpoReq, &pedido); erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Extraindo id da encomenda da requisição
+	parametro := chi.URLParam(r, "id")
+	idPedido, erro := strconv.Atoi(parametro)
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusBadRequest, erro)
+		return
+	}
+	// Abrindo conexão com banco de dados
+	db, erro := database.ConectarDB()
+	if erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+	// Chamando repositories para inserir dados no banco de dados
+	if erro = repositories.AtualizarStatus(pedido, idPedido, db); erro != nil {
+		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	// Enviando resposta de sucesso
+	responses.RespostaDeSucesso(w, http.StatusNoContent, nil)
+}
