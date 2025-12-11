@@ -23,7 +23,7 @@ func PedidosRouter() chi.Router {
 
 	r.Put("/{id}", controllers.AtualizarEncomenda)
 
-	r.Put("/atualizar-status/{id}", controllers.AtualizarStatus)
+	r.Patch("/atualizar-status/{id}", controllers.AtualizarStatus)
 
 	return r
 }

@@ -2025,7 +2025,7 @@ paths:
                     type: string
                     example: erro no servidor
   /encomendas/atualizar-status/{id}:
-    put:
+    patch:
       summary: Atualizar status de uma encomenda
       description: Atualiza status de uma encomenda com determinado id
       parameters:
