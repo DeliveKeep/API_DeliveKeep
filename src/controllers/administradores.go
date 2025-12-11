@@ -16,6 +16,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
+var (
+	conectarDB         = database.ConectarDB
+	criarAdministrador = repositories.CriarAdministrador
+)
+
 // Cria um administrador
 func CriarAdministrador(w http.ResponseWriter, r *http.Request) {
 	// Lendo corpo da requisição
@@ -37,14 +42,16 @@ func CriarAdministrador(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Abrindo conexão com banco de dados
-	db, erro := database.ConectarDB()
+	db, erro := conectarDB()
 	if erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
-	defer db.Close()
+	if db != nil {
+		defer db.Close()
+	}
 	// Chamando repositories para inserir dados no banco de dados
-	if erro = repositories.CriarAdministrador(&usuario, db); erro != nil {
+	if erro = criarAdministrador(&usuario, db); erro != nil {
 		responses.RespostaDeErro(w, http.StatusInternalServerError, erro)
 		return
 	}
