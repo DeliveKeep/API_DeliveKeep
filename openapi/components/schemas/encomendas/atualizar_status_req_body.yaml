@@ -1,0 +1,7 @@
+type: object
+properties:
+  status_pedido:
+    type: string
+    example: Entregue
+required:
+  - status_pedido

@@ -2024,3 +2024,81 @@ paths:
                   erro:
                     type: string
                     example: erro no servidor
+  /encomendas/atualizar-status/{id}:
+    put:
+      summary: Atualizar status de uma encomenda
+      description: Atualiza status de uma encomenda com determinado id
+      parameters:
+        - $ref: './components/parameters/jwt.yaml'
+        - $ref: './components/parameters/id_encomenda.yaml'
+      tags:
+        - Encomendas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/encomendas/atualizar_status_req_body.yaml'
+      responses:
+        '204':
+          description: Status atualizado
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '403':
+          description: Proibido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: permissao negada, apenas administradorese e operadores podem fazer essa ação
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor de banco de dados
